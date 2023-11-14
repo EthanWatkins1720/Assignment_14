@@ -1,4 +1,47 @@
 let count = 0;
+let toggle = false;
+
+const addAlbum = async (e) => {
+    e.preventDefault();
+
+    const form = document.getElementById("add-album-form");
+    const formData = new FormData(form);
+    formData.append("members", getMembers());
+    
+
+    let response;
+    
+    // For new albums
+    if (form._id.value == -1) {
+        formData.delete("_id");
+
+        response = await fetch("/api/data", {
+            method: "POST",
+            body: formData,
+        });
+    }
+
+    // Error
+    if(response.status != 200) {
+        console.log("Error contacting server");
+        return;
+    }
+
+    addShowHide;
+    resetForm();
+    showAlbums();
+};
+
+const getMembers = () => {
+    const inputs = document.querySelectorAll("#band-members-div input")
+    const members = [];
+
+    inputs.forEach((input) => {
+        members.push(input.value);
+    });
+
+    return members;
+}
 
 const showAlbums = async() => {
     let response;
@@ -65,7 +108,31 @@ const showAlbums = async() => {
     });
 };
 
+const addShowHide = (e) => {
+    e.preventDefault();
+    if (toggle) {
+        document.getElementById("add-album-box").style.display = "none";
+        toggle = false;
+    } else if (toggle == false) {
+        document.getElementById("add-album-box").style.display = "block";
+        toggle = true;
+    }
+};
+
+const addMember = (e) => {
+    e.preventDefault();
+    const memberDiv = document.getElementById("band-members-div");
+    const input = document.createElement("input");
+    input.type = "text";
+    memberDiv.append(input);
+}
+
 window.onload = () => {
     count = 0;
+    toggle = false;
     showAlbums();
-}
+    document.getElementById("add-button").onclick = addShowHide;
+    document.getElementById("band-members-button").onclick = addMember;
+    document.getElementById("add-album-form").onsubmit = addAlbum;
+
+};

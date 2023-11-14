@@ -55,3 +55,12 @@ li {
 #album-list {
     display: flex;
 }
+
+#add-album-box {
+    display: none;
+    text-align: center;
+	padding: 10px;
+	margin: 25px;
+	background: rgba(108, 89, 110, .7);
+	box-shadow: 10px 14px rgba(111, 125, 140, .7);
+}

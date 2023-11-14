@@ -1,8 +1,13 @@
 const express = require("express");
 const app = express();
-const joi = require("joi");
+const Joi = require("joi");
+const multer = require("multer");
 app.use(express.static("public"));
 app.use(express.json());
+const cors = require("cors");
+app.use(cors());
+
+const upload = multer({ dest: __dirname + "/public/images" });
 
 app.get("/",(req, res) => {
     res.sendFile(__dirname + "/index.html");
@@ -67,6 +72,43 @@ let albums = [
 app.get("/api/data", (req, res) => {
     res.json(albums);
 });
+
+app.post("api/data", upload.single("img"), (req, res) => {
+    const result = validateAlbum(req.body);
+
+    if (result.error) {
+        res.status(400).send(result.error.details[0].message);
+        return;
+    }
+
+    const album = {
+        _id: albums.length+1,
+        name: req.body.name,
+        band: req.body.band,
+        genre: req.body.genre,
+        year: req.body.year,
+    };
+
+    if (req.body.members) {
+        album.members = req.body.members.split(",");
+    }
+
+    albums.push(album);
+    res.send(album);
+});
+
+const validateAlbum = (album) => {
+    const schema = Joi.object({
+        _id: Joi.allow(""),
+        name: Joi.string.min(1).required(),
+        band: Joi.string.min(1).required(),
+        genre: Joi.string.min(3).required(),
+        year: Joi.number.required(),
+        members: Joi.allow(),
+    });
+
+    return schema.validate(album);
+};
 
 app.listen(3000, () => {
     console.log("How can I help you?")
