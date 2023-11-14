@@ -75,14 +75,12 @@ app.get("/api/data", (req, res) => {
 });
 
 app.post("/api/data", upload.single("img"), (req, res) => {
-    console.log("Body: " + req.body.genre);
     const result = validateAlbum(req.body);
-
     if (result.error) {
         res.status(400).send(result.error.details[0].message);
         return;
     }
-    console.log("Genre: " + req.body.genre);
+
     const album = {
         _id: albums.length+1,
         name: req.body.name,
@@ -96,6 +94,7 @@ app.post("/api/data", upload.single("img"), (req, res) => {
     }
 
     albums.push(album);
+    console.log(albums);
     res.send(album);
 });
 
@@ -108,7 +107,6 @@ const validateAlbum = (album) => {
         year: Joi.string().required(),
         members: Joi.allow(""),
     });
-    // console.log(schema);
     return schema.validate(album);
 };
 
