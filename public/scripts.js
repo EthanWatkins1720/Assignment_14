@@ -29,7 +29,6 @@ const addAlbum = async (e) => {
     response = await response.json();
     addShowHide;
     resetForm();
-    showAlbums();
 };
 
 const resetForm = () => { 
