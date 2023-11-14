@@ -6,18 +6,17 @@ const addAlbum = async (e) => {
 
     const form = document.getElementById("add-album-form");
     const formData = new FormData(form);
-    formData.append("members", getMembers());
     
-
     let response;
     
     // For new albums
     if (form._id.value == -1) {
         formData.delete("_id");
-
+        formData.append("members", getMembers());
+        // console.log(...formData);
         response = await fetch("/api/data", {
             method: "POST",
-            body: formData,
+            body: formData
         });
     }
 
@@ -27,10 +26,18 @@ const addAlbum = async (e) => {
         return;
     }
 
+    response = await response.json();
     addShowHide;
     resetForm();
     showAlbums();
 };
+
+const resetForm = () => { 
+    const form = document.getElementById("add-album-form");
+    form.reset();
+    form._id = "-1";
+    document.getElementById("band-members-div").innerHTML = "";
+}
 
 const getMembers = () => {
     const inputs = document.querySelectorAll("#band-members-div input")

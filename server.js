@@ -19,16 +19,16 @@ let albums = [
         name: "The Wall",
         band: "Pink Floyd",
         genre: "Rock",
-        year: 1973,
+        year: "1973",
         members: ["David Gilmour","Roger Waters","Nick Mason", "Richard Wright"],
-        picture: "./images/wall.jpeg"
+        picture: "../images/wall.jpeg"
     },
     {
         _id: 2,
         name: "Led Zeppelin IV",
         band: "Led Zeppelin",
         genre: "Rock",
-        year: 1971,
+        year: "1971",
         members: ["John Bonham", "John Paul Jones", "Jimmy Page", "Robert Plant"],
         picture: "../images/IV.jpeg"
     },
@@ -37,7 +37,7 @@ let albums = [
         name: "The Protomen",
         band: "The Protomen",
         genre: "Indie Rock",
-        year: 2005,
+        year: "2005",
         members: ["Raul Panther III","Murphy Weller","Commander B. Hawkins", "Sir Dr. Robert Bakker", "Shock Magnum", "Gambler Kirkdouglas", "Reanimator Lovejoy", "K.I.L.R.O.Y."],
         picture: "../images/protomen.jpeg"
     },
@@ -46,7 +46,7 @@ let albums = [
         name: "Relaxer",
         band: "Alt-J",
         genre: "Pop",
-        year: 2017,
+        year: "2017",
         members: ["Joe Newman","Thom Sonny Green","Gus Unger-Hamilton"],
         picture: "../images/relaxer.jpeg"
     },
@@ -55,7 +55,7 @@ let albums = [
         name: "Soul Punk",
         band: "Patrick Stump",
         genre: "Pop",
-        year: 2011,
+        year: "2011",
         members: ["Patrick Stump"],
         picture: "../images/punk.jpeg"
     },
@@ -64,23 +64,25 @@ let albums = [
         name: "Vegas",
         band: "The Crystal Method",
         genre: "Electronic",
-        year: 1997,
+        year: "1997",
         members: ["Scott Kirkland","Ken Jordan"],
         picture: "../images/vegas.jpeg"
     },
 ];
+
 app.get("/api/data", (req, res) => {
     res.json(albums);
 });
 
-app.post("api/data", upload.single("img"), (req, res) => {
+app.post("/api/data", upload.single("img"), (req, res) => {
+    console.log("Body: " + req.body.genre);
     const result = validateAlbum(req.body);
 
     if (result.error) {
         res.status(400).send(result.error.details[0].message);
         return;
     }
-
+    console.log("Genre: " + req.body.genre);
     const album = {
         _id: albums.length+1,
         name: req.body.name,
@@ -100,13 +102,13 @@ app.post("api/data", upload.single("img"), (req, res) => {
 const validateAlbum = (album) => {
     const schema = Joi.object({
         _id: Joi.allow(""),
-        name: Joi.string.min(1).required(),
-        band: Joi.string.min(1).required(),
-        genre: Joi.string.min(3).required(),
-        year: Joi.number.required(),
-        members: Joi.allow(),
+        name: Joi.string().min(1).required(),
+        band: Joi.string().min(1).required(),
+        genre: Joi.string().min(3).required(),
+        year: Joi.string().required(),
+        members: Joi.allow(""),
     });
-
+    // console.log(schema);
     return schema.validate(album);
 };
 
