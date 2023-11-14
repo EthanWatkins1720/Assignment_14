@@ -64,3 +64,7 @@ li {
 	background: rgba(108, 89, 110, .7);
 	box-shadow: 10px 14px rgba(111, 125, 140, .7);
 }
+
+#button-div {
+    text-align: center;
+}
